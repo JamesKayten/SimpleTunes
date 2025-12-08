@@ -8,29 +8,54 @@
 
 /* Begin PBXBuildFile section */
 		001 /* SimpleTunesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 101; };
-		002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 102; };
-		003 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103; };
-		004 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104; };
-		005 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105; };
-		006 /* TrackListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106; };
-		007 /* PlaylistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107; };
-		008 /* NowPlayingBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108; };
+		002 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 102; };
+		003 /* APICore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201; };
+		004 /* LibraryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202; };
+		005 /* TrackAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203; };
+		006 /* PlaylistAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204; };
+		007 /* QueueAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205; };
+		008 /* MediaAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 206; };
+		009 /* CoreModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301; };
+		010 /* QueueModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302; };
+		011 /* FeatureModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 303; };
+		012 /* ResponseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304; };
+		013 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401; };
+		014 /* AlbumViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402; };
+		015 /* ArtistViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403; };
+		016 /* SmartListViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404; };
+		017 /* TrackListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405; };
+		018 /* NowPlayingBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406; };
+		019 /* PlaylistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 407; };
+		020 /* QueuePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		100 /* SimpleTunes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleTunes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		101 /* SimpleTunesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleTunesApp.swift; sourceTree = "<group>"; };
-		102 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		103 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		104 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
-		105 /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
-		106 /* TrackListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackListView.swift; sourceTree = "<group>"; };
-		107 /* PlaylistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistView.swift; sourceTree = "<group>"; };
-		108 /* NowPlayingBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingBar.swift; sourceTree = "<group>"; };
+		102 /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
+		103 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		201 /* APICore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICore.swift; sourceTree = "<group>"; };
+		202 /* LibraryAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryAPI.swift; sourceTree = "<group>"; };
+		203 /* TrackAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackAPI.swift; sourceTree = "<group>"; };
+		204 /* PlaylistAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistAPI.swift; sourceTree = "<group>"; };
+		205 /* QueueAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueAPI.swift; sourceTree = "<group>"; };
+		206 /* MediaAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaAPI.swift; sourceTree = "<group>"; };
+		301 /* CoreModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreModels.swift; sourceTree = "<group>"; };
+		302 /* QueueModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueModels.swift; sourceTree = "<group>"; };
+		303 /* FeatureModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureModels.swift; sourceTree = "<group>"; };
+		304 /* ResponseModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseModels.swift; sourceTree = "<group>"; };
+		401 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		402 /* AlbumViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumViews.swift; sourceTree = "<group>"; };
+		403 /* ArtistViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistViews.swift; sourceTree = "<group>"; };
+		404 /* SmartListViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartListViews.swift; sourceTree = "<group>"; };
+		405 /* TrackListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackListView.swift; sourceTree = "<group>"; };
+		406 /* NowPlayingBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingBar.swift; sourceTree = "<group>"; };
+		407 /* PlaylistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistView.swift; sourceTree = "<group>"; };
+		408 /* QueuePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueuePanel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		200 /* Frameworks */ = {
+		500 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -40,30 +65,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		300 = {
+		600 = {
 			isa = PBXGroup;
 			children = (
-				301 /* SimpleTunes */,
-				302 /* Products */,
+				601 /* SimpleTunes */,
+				602 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		301 /* SimpleTunes */ = {
+		601 /* SimpleTunes */ = {
 			isa = PBXGroup;
 			children = (
 				101 /* SimpleTunesApp.swift */,
-				102 /* ContentView.swift */,
-				103 /* Models.swift */,
-				104 /* APIService.swift */,
-				105 /* PlayerViewModel.swift */,
-				106 /* TrackListView.swift */,
-				107 /* PlaylistView.swift */,
-				108 /* NowPlayingBar.swift */,
+				102 /* PlayerViewModel.swift */,
+				103 /* Info.plist */,
+				610 /* API */,
+				620 /* Models */,
+				630 /* Views */,
 			);
 			path = SimpleTunes;
 			sourceTree = "<group>";
 		};
-		302 /* Products */ = {
+		602 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				100 /* SimpleTunes.app */,
@@ -71,15 +94,54 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		610 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				201 /* APICore.swift */,
+				202 /* LibraryAPI.swift */,
+				203 /* TrackAPI.swift */,
+				204 /* PlaylistAPI.swift */,
+				205 /* QueueAPI.swift */,
+				206 /* MediaAPI.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		620 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				301 /* CoreModels.swift */,
+				302 /* QueueModels.swift */,
+				303 /* FeatureModels.swift */,
+				304 /* ResponseModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		630 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				401 /* ContentView.swift */,
+				402 /* AlbumViews.swift */,
+				403 /* ArtistViews.swift */,
+				404 /* SmartListViews.swift */,
+				405 /* TrackListView.swift */,
+				406 /* NowPlayingBar.swift */,
+				407 /* PlaylistView.swift */,
+				408 /* QueuePanel.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		400 /* SimpleTunes */ = {
+		700 /* SimpleTunes */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 500;
+			buildConfigurationList = 800;
 			buildPhases = (
-				401 /* Sources */,
-				200 /* Frameworks */,
+				701 /* Sources */,
+				500 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -93,28 +155,28 @@
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		600 /* Project object */ = {
+		900 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 			};
-			buildConfigurationList = 601;
+			buildConfigurationList = 901;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (en, Base);
-			mainGroup = 300;
-			productRefGroup = 302 /* Products */;
+			mainGroup = 600;
+			productRefGroup = 602 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
-			targets = (400 /* SimpleTunes */);
+			targets = (700 /* SimpleTunes */);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		401 /* Sources */ = {
+		701 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -126,13 +188,25 @@
 				006,
 				007,
 				008,
+				009,
+				010,
+				011,
+				012,
+				013,
+				014,
+				015,
+				016,
+				017,
+				018,
+				019,
+				020,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		700 /* Debug */ = {
+		A00 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -151,7 +225,7 @@
 			};
 			name = Debug;
 		};
-		701 /* Release */ = {
+		A01 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -167,7 +241,7 @@
 			};
 			name = Release;
 		};
-		702 /* Debug */ = {
+		A02 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -175,6 +249,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SimpleTunes/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks");
 				MARKETING_VERSION = 1.0;
@@ -184,7 +259,7 @@
 			};
 			name = Debug;
 		};
-		703 /* Release */ = {
+		A03 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -192,6 +267,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SimpleTunes/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks");
 				MARKETING_VERSION = 1.0;
@@ -204,19 +280,19 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		500 = {
+		800 = {
 			isa = XCConfigurationList;
-			buildConfigurations = (702, 703);
+			buildConfigurations = (A02, A03);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		601 = {
+		901 = {
 			isa = XCConfigurationList;
-			buildConfigurations = (700, 701);
+			buildConfigurations = (A00, A01);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 600 /* Project object */;
+	rootObject = 900 /* Project object */;
 }

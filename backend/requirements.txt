@@ -1,4 +1,17 @@
+# FastAPI and server
 fastapi==0.109.0
 uvicorn==0.27.0
+pydantic>=2.7.0
+
+# Database
+sqlalchemy==2.0.25
+
+# Audio metadata
 mutagen==1.47.0
-pydantic==2.5.3
+
+# HTTP client for artwork downloads
+aiohttp==3.9.1
+aiofiles==23.2.1
+
+# Image processing
+Pillow==10.2.0
