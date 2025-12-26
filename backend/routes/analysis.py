@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 
 from database import get_db
-from services import AudioAnalysisService
+from services import ReplayGainService, GaplessService
 
 router = APIRouter(prefix="/analysis", tags=["Audio Analysis"])
 
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/analysis", tags=["Audio Analysis"])
 @router.get("/{track_id}")
 def get_audio_analysis(track_id: str, db: Session = Depends(get_db)):
     """Get audio analysis for a track."""
-    service = AudioAnalysisService(db)
+    service = ReplayGainService(db)
     analysis = service.get_analysis(track_id)
     if analysis:
         return {
@@ -34,7 +34,7 @@ def get_audio_analysis(track_id: str, db: Session = Depends(get_db)):
 @router.post("/{track_id}")
 def analyze_track(track_id: str, force: bool = False, db: Session = Depends(get_db)):
     """Analyze a track for ReplayGain and gapless info."""
-    service = AudioAnalysisService(db)
+    service = ReplayGainService(db)
     result = service.analyze_track(track_id, force)
     if result:
         return result
@@ -44,7 +44,7 @@ def analyze_track(track_id: str, force: bool = False, db: Session = Depends(get_
 @router.post("/album/{album_id}")
 def analyze_album(album_id: str, db: Session = Depends(get_db)):
     """Analyze all tracks in an album and calculate album gain."""
-    service = AudioAnalysisService(db)
+    service = ReplayGainService(db)
     return service.analyze_album(album_id)
 
 
@@ -56,7 +56,7 @@ def get_playback_gain(
     db: Session = Depends(get_db)
 ):
     """Get gain adjustment for playback."""
-    service = AudioAnalysisService(db)
+    service = ReplayGainService(db)
     gain = service.get_playback_gain(track_id, use_album, prevent_clipping)
     return {"gain_db": gain}
 
@@ -68,19 +68,19 @@ def get_gapless_info(
     db: Session = Depends(get_db)
 ):
     """Get gapless playback info for transitioning between tracks."""
-    service = AudioAnalysisService(db)
+    service = GaplessService(db)
     return service.get_gapless_info(track_id, next_track_id)
 
 
 @router.post("/missing")
 def analyze_missing(limit: int = 50, db: Session = Depends(get_db)):
     """Analyze tracks that haven't been analyzed yet."""
-    service = AudioAnalysisService(db)
+    service = ReplayGainService(db)
     return service.analyze_missing(limit)
 
 
 @router.get("/stats")
 def get_analysis_stats(db: Session = Depends(get_db)):
     """Get audio analysis statistics."""
-    service = AudioAnalysisService(db)
+    service = ReplayGainService(db)
     return service.get_stats()

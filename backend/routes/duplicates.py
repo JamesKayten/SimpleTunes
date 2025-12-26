@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 
 from database import get_db
-from services import DuplicateService
+from services import DuplicateDetector, DuplicateResolver
 
 router = APIRouter(prefix="/duplicates", tags=["Duplicates"])
 
@@ -21,9 +21,9 @@ def scan_duplicates(
 
     match_type: 'exact' (file hash), 'metadata' (title/artist/duration), 'audio' (fingerprint)
     """
-    service = DuplicateService(db)
+    detector = DuplicateDetector(db)
     try:
-        return service.scan_for_duplicates(match_type, min_similarity)
+        return detector.scan_for_duplicates(match_type, min_similarity)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -35,15 +35,15 @@ def get_duplicate_groups(
     db: Session = Depends(get_db)
 ):
     """Get all duplicate groups."""
-    service = DuplicateService(db)
-    return {"groups": service.get_duplicate_groups(reviewed, match_type)}
+    resolver = DuplicateResolver(db)
+    return {"groups": resolver.get_duplicate_groups(reviewed, match_type)}
 
 
 @router.get("/{group_id}")
 def get_duplicate_group(group_id: str, db: Session = Depends(get_db)):
     """Get a duplicate group with all member tracks."""
-    service = DuplicateService(db)
-    group = service.get_duplicate_group(group_id)
+    resolver = DuplicateResolver(db)
+    group = resolver.get_duplicate_group(group_id)
     if not group:
         raise HTTPException(status_code=404, detail="Group not found")
     return group
@@ -52,8 +52,8 @@ def get_duplicate_group(group_id: str, db: Session = Depends(get_db)):
 @router.post("/{group_id}/resolve")
 def resolve_duplicate(group_id: str, keep_track_id: str, db: Session = Depends(get_db)):
     """Mark a duplicate group as reviewed and select track to keep."""
-    service = DuplicateService(db)
-    if service.mark_reviewed(group_id, keep_track_id):
+    resolver = DuplicateResolver(db)
+    if resolver.mark_reviewed(group_id, keep_track_id):
         return {"resolved": True}
     raise HTTPException(status_code=404, detail="Group not found")
 
@@ -65,8 +65,8 @@ def delete_duplicates(
     db: Session = Depends(get_db)
 ):
     """Delete duplicate tracks, keeping the primary one."""
-    service = DuplicateService(db)
-    result = service.delete_duplicates(group_id, delete_files)
+    resolver = DuplicateResolver(db)
+    result = resolver.delete_duplicates(group_id, delete_files)
     if "error" in result:
         raise HTTPException(status_code=404, detail=result["error"])
     return result
@@ -79,12 +79,12 @@ def auto_resolve_duplicates(
     db: Session = Depends(get_db)
 ):
     """Automatically resolve all unreviewed duplicate groups."""
-    service = DuplicateService(db)
-    return service.auto_resolve_duplicates(delete_files, match_types)
+    resolver = DuplicateResolver(db)
+    return resolver.auto_resolve_duplicates(delete_files, match_types)
 
 
 @router.get("/stats")
 def get_duplicate_stats(db: Session = Depends(get_db)):
     """Get duplicate detection statistics."""
-    service = DuplicateService(db)
-    return service.get_stats()
+    detector = DuplicateDetector(db)
+    return detector.get_stats()

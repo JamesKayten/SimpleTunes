@@ -6,7 +6,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 from database import get_db
-from services import TagEditorService
+from services import TagReaderService, TagWriterService
 
 router = APIRouter(prefix="/tags", tags=["Tag Editing"])
 
@@ -36,7 +36,7 @@ class BatchTagUpdateRequest(BaseModel):
 @router.get("/{track_id}")
 def get_tags(track_id: str, db: Session = Depends(get_db)):
     """Get all editable tags for a track (from file and database)."""
-    service = TagEditorService(db)
+    service = TagReaderService(db)
     result = service.get_tags(track_id)
     if not result:
         raise HTTPException(status_code=404, detail="Track not found")
@@ -48,7 +48,7 @@ def get_tags(track_id: str, db: Session = Depends(get_db)):
 @router.put("/{track_id}")
 def update_tags(track_id: str, request: TagUpdateRequest, db: Session = Depends(get_db)):
     """Update track tags in database and optionally in file."""
-    service = TagEditorService(db)
+    service = TagWriterService(db)
     result = service.update_tags(
         track_id,
         title=request.title,
@@ -70,7 +70,7 @@ def update_tags(track_id: str, request: TagUpdateRequest, db: Session = Depends(
 @router.post("/{track_id}/sync")
 def sync_tags_from_file(track_id: str, db: Session = Depends(get_db)):
     """Sync database tags from file (useful when file was edited externally)."""
-    service = TagEditorService(db)
+    service = TagWriterService(db)
     result = service.sync_from_file(track_id)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
@@ -80,7 +80,7 @@ def sync_tags_from_file(track_id: str, db: Session = Depends(get_db)):
 @router.put("/batch")
 def batch_update_tags(request: BatchTagUpdateRequest, db: Session = Depends(get_db)):
     """Update tags for multiple tracks at once."""
-    service = TagEditorService(db)
+    service = TagWriterService(db)
     return service.batch_update(
         request.track_ids,
         artist=request.artist,

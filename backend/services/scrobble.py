@@ -1,28 +1,22 @@
 """Scrobbling service for Last.fm, Libre.fm, and ListenBrainz."""
 
-import hashlib
 import time
-import aiohttp
 from datetime import datetime
 from typing import Optional
 from sqlalchemy.orm import Session
 
 from models import ScrobbleConfig, ScrobbleHistory, Track
+from .scrobble_lastfm import LastfmScrobbler
+from .scrobble_listenbrainz import ListenBrainzScrobbler
 
 
 class ScrobbleService:
     """Service for scrobbling tracks to various services."""
 
-    LASTFM_API_URL = "https://ws.audioscrobbler.com/2.0/"
-    LIBREFM_API_URL = "https://libre.fm/2.0/"
-    LISTENBRAINZ_API_URL = "https://api.listenbrainz.org/1/submit-listens"
-
     def __init__(self, db: Session):
         self.db = db
-
-    # =========================================================================
-    # Configuration Management
-    # =========================================================================
+        self.lastfm = LastfmScrobbler()
+        self.listenbrainz = ListenBrainzScrobbler()
 
     def get_config(self, service: str) -> Optional[ScrobbleConfig]:
         """Get configuration for a scrobbling service."""
@@ -80,56 +74,15 @@ class ScrobbleService:
         self.db.commit()
         return True
 
-    # =========================================================================
-    # Last.fm Authentication
-    # =========================================================================
-
     def get_lastfm_auth_url(self, api_key: str, callback_url: Optional[str] = None) -> str:
         """Get Last.fm authentication URL for user to authorize."""
-        url = f"https://www.last.fm/api/auth/?api_key={api_key}"
-        if callback_url:
-            url += f"&cb={callback_url}"
-        return url
+        return self.lastfm.get_lastfm_auth_url(api_key, callback_url)
 
     async def complete_lastfm_auth(
         self, api_key: str, api_secret: str, token: str
     ) -> dict:
         """Complete Last.fm authentication and get session key."""
-        params = {
-            "method": "auth.getSession",
-            "api_key": api_key,
-            "token": token,
-        }
-
-        # Generate signature
-        sig = self._generate_lastfm_signature(params, api_secret)
-        params["api_sig"] = sig
-        params["format"] = "json"
-
-        async with aiohttp.ClientSession() as session:
-            async with session.get(self.LASTFM_API_URL, params=params) as response:
-                data = await response.json()
-
-        if "error" in data:
-            raise ValueError(data.get("message", "Authentication failed"))
-
-        session_info = data.get("session", {})
-        return {
-            "username": session_info.get("name"),
-            "session_key": session_info.get("key"),
-        }
-
-    def _generate_lastfm_signature(self, params: dict, secret: str) -> str:
-        """Generate Last.fm API signature."""
-        # Sort params and concatenate
-        sorted_params = sorted(params.items())
-        sig_string = "".join(f"{k}{v}" for k, v in sorted_params)
-        sig_string += secret
-        return hashlib.md5(sig_string.encode()).hexdigest()
-
-    # =========================================================================
-    # Scrobbling
-    # =========================================================================
+        return await self.lastfm.complete_lastfm_auth(api_key, api_secret, token)
 
     async def scrobble(
         self,
@@ -150,11 +103,11 @@ class ScrobbleService:
         for config in configs:
             try:
                 if config.service == "lastfm":
-                    success = await self._scrobble_lastfm(track, config, timestamp)
+                    success = await self.lastfm.scrobble_lastfm(track, config, timestamp)
                 elif config.service == "librefm":
-                    success = await self._scrobble_librefm(track, config, timestamp)
+                    success = await self.lastfm.scrobble_librefm(track, config, timestamp)
                 elif config.service == "listenbrainz":
-                    success = await self._scrobble_listenbrainz(track, config, timestamp)
+                    success = await self.listenbrainz.scrobble_listenbrainz(track, config, timestamp)
                 else:
                     continue
 
@@ -181,11 +134,11 @@ class ScrobbleService:
         for config in configs:
             try:
                 if config.service == "lastfm":
-                    success = await self._now_playing_lastfm(track, config)
+                    success = await self.lastfm.now_playing_lastfm(track, config)
                 elif config.service == "librefm":
-                    success = await self._now_playing_librefm(track, config)
+                    success = await self.lastfm.now_playing_librefm(track, config)
                 elif config.service == "listenbrainz":
-                    success = await self._now_playing_listenbrainz(track, config)
+                    success = await self.listenbrainz.now_playing_listenbrainz(track, config)
                 else:
                     continue
 
@@ -195,167 +148,6 @@ class ScrobbleService:
                 results[config.service] = {"success": False, "error": str(e)}
 
         return results
-
-    async def _scrobble_lastfm(
-        self, track: Track, config: ScrobbleConfig, timestamp: int
-    ) -> bool:
-        """Scrobble to Last.fm."""
-        if not config.session_key:
-            raise ValueError("Last.fm not authenticated")
-
-        params = {
-            "method": "track.scrobble",
-            "api_key": config.api_key,
-            "sk": config.session_key,
-            "artist": track.artist.name if track.artist else "Unknown",
-            "track": track.title,
-            "timestamp": str(timestamp),
-        }
-
-        if track.album:
-            params["album"] = track.album.title
-
-        if track.duration:
-            params["duration"] = str(int(track.duration))
-
-        sig = self._generate_lastfm_signature(params, config.api_secret)
-        params["api_sig"] = sig
-        params["format"] = "json"
-
-        async with aiohttp.ClientSession() as session:
-            async with session.post(self.LASTFM_API_URL, data=params) as response:
-                data = await response.json()
-
-        return "scrobbles" in data and data["scrobbles"].get("@attr", {}).get("accepted", 0) > 0
-
-    async def _now_playing_lastfm(self, track: Track, config: ScrobbleConfig) -> bool:
-        """Update now playing on Last.fm."""
-        if not config.session_key:
-            return False
-
-        params = {
-            "method": "track.updateNowPlaying",
-            "api_key": config.api_key,
-            "sk": config.session_key,
-            "artist": track.artist.name if track.artist else "Unknown",
-            "track": track.title,
-        }
-
-        if track.album:
-            params["album"] = track.album.title
-
-        if track.duration:
-            params["duration"] = str(int(track.duration))
-
-        sig = self._generate_lastfm_signature(params, config.api_secret)
-        params["api_sig"] = sig
-        params["format"] = "json"
-
-        async with aiohttp.ClientSession() as session:
-            async with session.post(self.LASTFM_API_URL, data=params) as response:
-                data = await response.json()
-
-        return "nowplaying" in data
-
-    async def _scrobble_librefm(
-        self, track: Track, config: ScrobbleConfig, timestamp: int
-    ) -> bool:
-        """Scrobble to Libre.fm (same API as Last.fm)."""
-        if not config.session_key:
-            raise ValueError("Libre.fm not authenticated")
-
-        params = {
-            "method": "track.scrobble",
-            "api_key": config.api_key,
-            "sk": config.session_key,
-            "artist": track.artist.name if track.artist else "Unknown",
-            "track": track.title,
-            "timestamp": str(timestamp),
-        }
-
-        if track.album:
-            params["album"] = track.album.title
-
-        sig = self._generate_lastfm_signature(params, config.api_secret)
-        params["api_sig"] = sig
-        params["format"] = "json"
-
-        async with aiohttp.ClientSession() as session:
-            async with session.post(self.LIBREFM_API_URL, data=params) as response:
-                data = await response.json()
-
-        return "scrobbles" in data
-
-    async def _now_playing_librefm(self, track: Track, config: ScrobbleConfig) -> bool:
-        """Update now playing on Libre.fm."""
-        return await self._now_playing_lastfm(track, config)  # Same API
-
-    async def _scrobble_listenbrainz(
-        self, track: Track, config: ScrobbleConfig, timestamp: int
-    ) -> bool:
-        """Scrobble to ListenBrainz."""
-        if not config.session_key:  # Using session_key to store user token
-            raise ValueError("ListenBrainz not authenticated")
-
-        payload = {
-            "listen_type": "single",
-            "payload": [
-                {
-                    "listened_at": timestamp,
-                    "track_metadata": {
-                        "artist_name": track.artist.name if track.artist else "Unknown",
-                        "track_name": track.title,
-                        "release_name": track.album.title if track.album else None,
-                        "additional_info": {
-                            "duration_ms": int(track.duration * 1000) if track.duration else None,
-                            "tracknumber": track.track_number,
-                        },
-                    },
-                }
-            ],
-        }
-
-        headers = {
-            "Authorization": f"Token {config.session_key}",
-            "Content-Type": "application/json",
-        }
-
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                self.LISTENBRAINZ_API_URL, json=payload, headers=headers
-            ) as response:
-                return response.status == 200
-
-    async def _now_playing_listenbrainz(
-        self, track: Track, config: ScrobbleConfig
-    ) -> bool:
-        """Update now playing on ListenBrainz."""
-        if not config.session_key:
-            return False
-
-        payload = {
-            "listen_type": "playing_now",
-            "payload": [
-                {
-                    "track_metadata": {
-                        "artist_name": track.artist.name if track.artist else "Unknown",
-                        "track_name": track.title,
-                        "release_name": track.album.title if track.album else None,
-                    },
-                }
-            ],
-        }
-
-        headers = {
-            "Authorization": f"Token {config.session_key}",
-            "Content-Type": "application/json",
-        }
-
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                self.LISTENBRAINZ_API_URL, json=payload, headers=headers
-            ) as response:
-                return response.status == 200
 
     def _record_scrobble(
         self,
@@ -373,10 +165,6 @@ class ScrobbleService:
         )
         self.db.add(history)
         self.db.commit()
-
-    # =========================================================================
-    # History
-    # =========================================================================
 
     def get_scrobble_history(
         self,
