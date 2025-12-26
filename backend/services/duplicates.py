@@ -107,12 +107,89 @@ class DuplicateService:
         Note: Requires chromaprint/fpcalc to be installed.
         This is more accurate but slower.
         """
-        # Audio fingerprinting requires external tools
-        # For now, return a placeholder
+        try:
+            import acoustid
+        except ImportError:
+            return {
+                "match_type": "audio",
+                "error": "Audio fingerprinting requires pyacoustid and chromaprint. "
+                        "Install with: pip install pyacoustid && brew install chromaprint",
+                "groups_found": 0,
+            }
+
+        # Get all tracks
+        tracks = self.db.query(Track).all()
+
+        # Generate fingerprints for all tracks
+        fingerprints = {}
+        failed = 0
+
+        for track in tracks:
+            try:
+                duration, fp = acoustid.fingerprint_file(track.path)
+                fingerprints[track.id] = (duration, fp)
+            except Exception:
+                # Skip tracks that can't be fingerprinted
+                failed += 1
+                continue
+
+        # Compare fingerprints to find similar audio
+        # Group tracks by similar fingerprints
+        fingerprint_groups = defaultdict(list)
+        processed = set()
+
+        track_ids = list(fingerprints.keys())
+        for i, track_id in enumerate(track_ids):
+            if track_id in processed:
+                continue
+
+            duration1, fp1 = fingerprints[track_id]
+            group = [track_id]
+            processed.add(track_id)
+
+            # Compare with remaining tracks
+            for j in range(i + 1, len(track_ids)):
+                other_id = track_ids[j]
+                if other_id in processed:
+                    continue
+
+                duration2, fp2 = fingerprints[other_id]
+
+                # Check if fingerprints are similar
+                # Similar duration (within 5 seconds) and same fingerprint
+                if abs(duration1 - duration2) < 5 and fp1 == fp2:
+                    group.append(other_id)
+                    processed.add(other_id)
+
+            if len(group) > 1:
+                fingerprint_groups[fp1] = group
+
+        # Create duplicate groups
+        groups_created = 0
+        for fingerprint, track_ids in fingerprint_groups.items():
+            # Get track objects
+            track_list = [
+                self.db.query(Track).filter(Track.id == tid).first()
+                for tid in track_ids
+            ]
+            track_list = [t for t in track_list if t]  # Filter None values
+
+            if len(track_list) > 1:
+                # Use first 32 chars of fingerprint as hash
+                fp_hash = hashlib.md5(fingerprint.encode()).hexdigest()
+                self._create_duplicate_group(
+                    track_list, fp_hash, "audio"
+                )
+                groups_created += 1
+
         return {
             "match_type": "audio",
-            "error": "Audio fingerprinting requires chromaprint. Install with: brew install chromaprint",
-            "groups_found": 0,
+            "groups_found": groups_created,
+            "tracks_processed": len(fingerprints),
+            "tracks_failed": failed,
+            "total_duplicates": sum(
+                len(g) for g in fingerprint_groups.values()
+            ),
         }
 
     def _get_file_hash(self, filepath: str, chunk_size: int = 8192) -> Optional[str]:

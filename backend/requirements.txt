@@ -8,6 +8,7 @@ sqlalchemy==2.0.25
 
 # Audio metadata
 mutagen==1.47.0
+pyacoustid==1.3.0
 
 # HTTP client for artwork downloads
 aiohttp==3.9.1
