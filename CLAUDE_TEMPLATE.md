@@ -10,6 +10,44 @@ These rules are REQUIRED. There is NO other way to assist this user. If you cann
 
 ---
 
+## ⚠️ CRITICAL: WORKTREE LOCATION - ABSOLUTE REQUIREMENT
+
+**WORKTREES MUST BE CREATED IN THE {{CODE_FOLDER}} ONLY**
+
+```
+✅ CORRECT: {{CODE_FOLDER}}/.claude-worktrees/
+❌ WRONG:   ~/ (home directory)
+❌ WRONG:   ~/Documents/
+❌ WRONG:   Any location outside {{CODE_FOLDER}}
+❌ WRONG:   Relative paths like ./.claude-worktrees/
+```
+
+**The ONLY acceptable base path for worktrees is:**
+```
+{{CODE_FOLDER}}
+```
+
+**NEVER create worktrees in:**
+- The user's home directory root
+- Documents, Desktop, or other user folders
+- Any location outside the designated code folder
+- Any abbreviated or relative path
+
+**If you need to create a worktree, the command MUST be:**
+```bash
+git worktree add {{CODE_FOLDER}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
+```
+
+**Before creating any worktree, verify the path contains the code folder designation.**
+
+**Example verification**:
+```bash
+# Verify path contains code folder
+pwd | grep -q "{{CODE_FOLDER_PATTERN}}" && echo "✅ Correct location" || echo "❌ WRONG LOCATION"
+```
+
+---
+
 ## STOP. READ THIS COMPLETELY BEFORE DOING ANYTHING.
 
 You are running in a **git worktree**. A worktree is an isolated working directory that allows multiple branches to be checked out simultaneously without conflicts.
@@ -79,6 +117,9 @@ This does NOT mean:
 
 | ❌ Wrong Action | ✅ Correct Action | Why |
 |----------------|-------------------|-----|
+| Create worktree in `~/` | Create worktree in {{CODE_FOLDER}} | Worktrees MUST be in designated code folder only |
+| Use `~/.claude-worktrees/` | Use `{{CODE_FOLDER}}/.claude-worktrees/` | Full absolute path in code folder required |
+| Use relative paths | Use absolute paths with code folder | Prevents location confusion |
 | Edit files in main repo | Edit files in worktree | Worktree isolation prevents conflicts |
 | `cd` to main repo to commit | Commit from worktree | Commits must be in worktree branch |
 | `git checkout {{TARGET_BRANCH}}` locally | `git push origin <branch>:{{TARGET_BRANCH}}` | Push remotely, don't merge locally |
@@ -259,6 +300,12 @@ Examples:
 
 ## REMEMBER
 
+**CRITICAL - WORKTREE LOCATION:**
+- ✅ Worktrees MUST be in `{{CODE_FOLDER}}/.claude-worktrees/` ONLY
+- ❌ NEVER create worktrees in home directory or outside code folder
+- ✅ ALWAYS verify path contains code folder designation before working
+
+**WORKFLOW:**
 - ✅ Always work in the worktree
 - ✅ Commit from the worktree
 - ✅ Push your worktree branch to remote `{{TARGET_BRANCH}}`
@@ -273,16 +320,27 @@ Examples:
 
 Before using this template, replace all `{{VARIABLES}}`:
 
-- [ ] `{{WORKTREE_BASE_PATH}}` - Your worktrees base directory
+**CRITICAL - Set These First:**
+- [ ] `{{CODE_FOLDER}}` - **REQUIRED** Absolute path to code folder (e.g., `/Users/you/Code`)
+- [ ] `{{CODE_FOLDER_PATTERN}}` - Pattern to match code folder (e.g., `/Code/` or `/code/`)
+- [ ] `{{WORKTREE_BASE_PATH}}` - Your worktrees base directory (usually `{{CODE_FOLDER}}/.claude-worktrees`)
 - [ ] `{{PROJECT_NAME}}` - Your project name
+
+**Standard Configuration:**
 - [ ] `{{TARGET_BRANCH}}` - Target branch for pushes (usually `dev`, `develop`, or `staging`)
 - [ ] `{{EXAMPLE_TASK}}` - Representative task for your project
 - [ ] `{{EXAMPLE_FILE_PATH}}` - Example file path
 - [ ] `{{EXAMPLE_COMMIT_MESSAGE}}` - Example commit message
+
+**Project Structure:**
 - [ ] `{{BACKEND_*}}`, `{{FRONTEND_*}}` - Component details
 - [ ] `{{ROLE_*}}` - AI instance role definitions
 - [ ] `{{CUSTOM_*}}` - Any project-specific content
+
+**Final Step:**
 - [ ] Remove this checklist section when done!
+
+**IMPORTANT**: The `{{CODE_FOLDER}}` setting is CRITICAL. All worktrees MUST be created within this folder. Double-check this is set correctly before using.
 
 ---
 
