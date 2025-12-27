@@ -14,60 +14,23 @@ These rules are REQUIRED. There is NO other way to assist this user. If you cann
 
 ---
 
-## ⚠️ CRITICAL: WORKTREE LOCATION - ABSOLUTE REQUIREMENT
+## ⚠️ IMPORTANT: WORKTREE LOCATION
 
-**WORKTREES MUST BE CREATED IN THE CODE FOLDER ONLY**
+**NOTE: The Claude Code application automatically creates worktrees in `~/.claude-worktrees/`**
 
-**❌ VIOLATION OF THIS RULE WILL CAUSE SEVERE PROBLEMS - DO NOT DEVIATE ❌**
+This is hardcoded behavior in the Claude Code app itself. By the time the AI starts, the worktree has already been created by the application.
 
+**The actual worktree location used by Claude Code:**
 ```
-✅ CORRECT: /Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/
-❌ WRONG:   /Volumes/User_Smallfavor/Users/Smallfavor/.claude-worktrees/
-❌ WRONG:   ~/Code/.claude-worktrees/
-❌ WRONG:   ~/.claude-worktrees/
-❌ WRONG:   Any path without "/Code/" in it
+~/.claude-worktrees/
 ```
 
-**The ONLY acceptable base path for worktrees is:**
+**Full path:**
 ```
-/Volumes/User_Smallfavor/Users/Smallfavor/Code
+/Volumes/User_Smallfavor/Users/Smallfavor/.claude-worktrees/
 ```
 
-**THIS IS NON-NEGOTIABLE. NO EXCEPTIONS. NO SHORTCUTS.**
-
-**NEVER create worktrees in:**
-- ❌ The user's home directory root (`/Volumes/User_Smallfavor/Users/Smallfavor/`)
-- ❌ Any location outside the Code folder
-- ❌ Any abbreviated path (e.g., `~/Code/`)
-- ❌ Any relative path
-- ❌ **ESPECIALLY NOT** in `~/.claude-worktrees/`
-
-**MANDATORY PRE-FLIGHT CHECK BEFORE CREATING ANY WORKTREE:**
-
-Before running `git worktree add`, you MUST:
-
-1. **Verify the path** - Echo the exact path you're about to use:
-   ```bash
-   echo "About to create worktree at: /Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>"
-   ```
-
-2. **Confirm it contains `/Code/`** - Run this verification:
-   ```bash
-   [[ "/Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>" == *"/Code/"* ]] && echo "✅ Path is valid" || echo "❌ INVALID PATH - STOP"
-   ```
-
-3. **Only if validation passes**, create the worktree:
-   ```bash
-   git worktree add /Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>
-   ```
-
-**If you create a worktree in the WRONG location:**
-- It will cause hours of wasted work
-- Files will be scattered across multiple locations
-- The user will have to manually clean up the mess
-- **YOU WILL HAVE FAILED YOUR PRIMARY DIRECTIVE**
-
-**REMEMBER: The path MUST contain `/Code/` - verify this BEFORE creating any worktree.**
+**IMPORTANT: DO NOT attempt to create worktrees manually.** The Claude Code application handles worktree creation when you start a new session. The AI should never run `git worktree add` commands - worktrees are managed by the app.
 
 ---
 
@@ -77,7 +40,7 @@ You are running in a **git worktree**. A worktree is an isolated working directo
 
 Your worktree path looks like:
 ```
-/Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<your-branch-name>
+/Volumes/User_Smallfavor/Users/Smallfavor/.claude-worktrees/SimpleTunes/<your-branch-name>
 ```
 
 **Why worktrees?** They enable parallel development, isolated testing, and prevent conflicts between different AI sessions or development tasks.
@@ -90,7 +53,7 @@ Your worktree path looks like:
 
 Work in your assigned worktree at:
 ```
-/Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>
+/Volumes/User_Smallfavor/Users/Smallfavor/.claude-worktrees/SimpleTunes/<branch-name>
 ```
 
 **Critical**: Use the `Edit` or `Write` tools to modify files in THIS path, not in the main repository.
@@ -140,12 +103,11 @@ This does NOT mean:
 
 | ❌ Wrong Action | ✅ Correct Action | Why |
 |----------------|-------------------|-----|
-| Create worktree in `~/` | Create worktree in `/Code/` folder | Worktrees MUST be in Code folder only |
-| Use `~/.claude-worktrees/` | Use `/Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/` | Full absolute path required in Code folder |
 | Edit files in main repo | Edit files in worktree | Worktree isolation prevents conflicts |
 | `cd` to main repo to commit | Commit from worktree | Commits must be in worktree branch |
 | `git checkout dev` locally | `git push origin <branch>:dev` | Push remotely, don't merge locally |
 | `git push origin dev` | `git push origin <worktree-branch>:dev` | Push your branch TO dev, not dev itself |
+| Manually create worktrees | Let app manage worktrees | Claude Code app handles worktree creation |
 
 ---
 
@@ -157,12 +119,10 @@ Before working, verify your location:
 # Check current directory
 pwd
 
-# MUST show path containing /Code/.claude-worktrees/
-# ✅ CORRECT: /Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>
-# ❌ WRONG:   /Volumes/User_Smallfavor/Users/Smallfavor/.claude-worktrees/SimpleTunes/<branch-name>
+# Should show: /Volumes/User_Smallfavor/Users/Smallfavor/.claude-worktrees/SimpleTunes/<branch-name>
 
-# Verify path contains /Code/
-pwd | grep -q "/Code/" && echo "✅ Correct location" || echo "❌ WRONG LOCATION - MUST BE IN CODE FOLDER"
+# Verify path contains .claude-worktrees
+pwd | grep -q "/.claude-worktrees/" && echo "✅ In worktree" || echo "❌ Not in worktree"
 
 # Check current branch
 git branch --show-current
@@ -170,7 +130,7 @@ git branch --show-current
 # Should show your worktree branch name, NOT 'dev' or 'main'
 ```
 
-**CRITICAL CHECK**: If your path does NOT contain `/Code/`, you are in the WRONG location. Stop immediately and navigate to the correct worktree in the Code folder.
+**CRITICAL CHECK**: Verify you're in the worktree directory, not the main repository.
 
 ---
 
@@ -260,22 +220,22 @@ Different Claude instances handle specific tasks based on their context:
 
 ## TROUBLESHOOTING
 
-### "Worktree created in wrong location" ⚠️ CRITICAL
-**Problem**: Worktree was created in `~/.claude-worktrees/` instead of `/Code/.claude-worktrees/`
+### "Working in wrong directory"
+**Problem**: You're editing files in the main repository instead of the worktree
 
 **Solution**:
 ```bash
-# 1. Remove the incorrectly placed worktree
-git worktree remove ~/.claude-worktrees/SimpleTunes/<branch-name>
+# 1. Verify your current location
+pwd
 
-# 2. Create it in the CORRECT location
-git worktree add /Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>
+# 2. Should show worktree path
+# /Volumes/User_Smallfavor/Users/Smallfavor/.claude-worktrees/SimpleTunes/<branch-name>
 
-# 3. Verify location
-pwd | grep -q "/Code/" && echo "✅ Correct" || echo "❌ Still wrong"
+# 3. If not in worktree, navigate to it
+cd ~/.claude-worktrees/SimpleTunes/<branch-name>
 ```
 
-**Prevention**: ALWAYS verify path contains `/Code/` before creating worktrees
+**Prevention**: ALWAYS verify you're in the worktree before editing files
 
 ### "Push failed - permission denied"
 - Verify branch name matches your worktree
@@ -287,14 +247,14 @@ pwd | grep -q "/Code/" && echo "✅ Correct" || echo "❌ Still wrong"
 - Run: `git checkout <your-worktree-branch>`
 
 ### "Cannot find worktree path"
-- Verify path exists: `ls /Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/`
+- Verify path exists: `ls ~/.claude-worktrees/SimpleTunes/`
 - Check you're using correct branch name in path
-- Ensure you're looking in `/Code/` not `~/`
+- List all worktrees: `git worktree list`
 
 ### "File not found after editing"
 - Confirm you edited file in WORKTREE path, not main repo
-- Verify worktree is in `/Code/.claude-worktrees/` not `~/.claude-worktrees/`
 - Use absolute paths to avoid confusion
+- Verify you're in the correct worktree: `pwd`
 
 ---
 
@@ -323,52 +283,18 @@ pwd && git branch --show-current
 
 ## REMEMBER
 
-**CRITICAL - WORKTREE LOCATION:**
-- ✅ Worktrees MUST be in `/Code/.claude-worktrees/` ONLY
-- ❌ NEVER create worktrees in `~/.claude-worktrees/` or home directory
-- ✅ ALWAYS verify path contains `/Code/` before working
-- 🚨 **IF UNSURE, ASK THE USER BEFORE CREATING A WORKTREE**
+**CRITICAL - WORKTREE MANAGEMENT:**
+- ✅ Worktrees are created by Claude Code app in `~/.claude-worktrees/`
+- ❌ NEVER manually create worktrees with `git worktree add`
+- ✅ ALWAYS verify you're in the worktree before editing files
+- ✅ The app manages worktree creation automatically
 
 **WORKFLOW:**
-- ✅ Always work in the worktree
+- ✅ Always work in the worktree (not main repo)
 - ✅ Commit from the worktree
 - ✅ Push your worktree branch to remote `dev`
 - ✅ Verify after every push
 - ❌ Never check out `dev` locally
 - ❌ Never work in main repository
 - ❌ Never skip the verification step
-
----
-
-## 🔒 FINAL WORKTREE LOCATION ENFORCEMENT 🔒
-
-**THIS SECTION EXISTS TO PREVENT THE MISTAKE THAT WAS MADE BEFORE**
-
-When you need to create a worktree:
-
-**STEP 1: STOP AND VERIFY**
-Ask yourself: "Does my path contain `/Code/`?"
-
-**STEP 2: USE THIS EXACT COMMAND FORMAT**
-```bash
-git worktree add /Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>
-```
-
-**STEP 3: AFTER CREATION, IMMEDIATELY VERIFY**
-```bash
-git worktree list | grep "/Code/"
-```
-
-If you don't see `/Code/` in the output, you created the worktree in the WRONG location.
-
-**CONSEQUENCES OF VIOLATING THIS RULE:**
-- ✅ Correct path: User can work productively
-- ❌ Wrong path: Hours of cleanup, lost work, frustration
-
-**THE ONLY ACCEPTABLE WORKTREE PATH:**
-```
-/Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>
-                                          ^^^^^ THIS PART IS CRITICAL
-```
-
-**If you're about to create a worktree and have ANY doubt, STOP and ask the user to verify the path.**
+- ❌ Never manually create or manage worktrees
