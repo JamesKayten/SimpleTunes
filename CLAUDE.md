@@ -80,7 +80,7 @@ Example if your branch is named `elegant-turing`:
 git push origin elegant-turing:dev
 ```
 
-**Important**: You are NOT checking out `dev` locally. You are pushing your branch's changes to the remote `dev` branch.
+**Important**: This pushes your changes to the remote `dev` branch. The user maintains a local `dev` branch for testing in Xcode - DO NOT modify or interfere with the local `dev` branch. The user will update it manually when needed.
 
 ---
 
@@ -93,9 +93,10 @@ When the user says "push to dev", follow this sequence:
 3. **Push to remote dev** - Run: `git push origin <worktree-branch>:dev`
 
 This does NOT mean:
-- ❌ Checking out the `dev` branch locally
-- ❌ Merging your branch into local `dev`
+- ❌ Checking out the local `dev` branch (user manages this for Xcode testing)
+- ❌ Merging your branch into local `dev` (user handles this manually)
 - ❌ Working in the main repository
+- ❌ Modifying the local `dev` branch in any way
 
 ---
 
@@ -105,7 +106,7 @@ This does NOT mean:
 |----------------|-------------------|-----|
 | Edit files in main repo | Edit files in worktree | Worktree isolation prevents conflicts |
 | `cd` to main repo to commit | Commit from worktree | Commits must be in worktree branch |
-| `git checkout dev` locally | `git push origin <branch>:dev` | Push remotely, don't merge locally |
+| Modify local `dev` branch | `git push origin <branch>:dev` | User manages local dev for Xcode testing |
 | `git push origin dev` | `git push origin <worktree-branch>:dev` | Push your branch TO dev, not dev itself |
 | Manually create worktrees | Let app manage worktrees | Claude Code app handles worktree creation |
 
@@ -294,7 +295,7 @@ pwd && git branch --show-current
 - ✅ Commit from the worktree
 - ✅ Push your worktree branch to remote `dev`
 - ✅ Verify after every push
-- ❌ Never check out `dev` locally
+- ❌ Never modify the local `dev` branch (user uses it for Xcode testing)
 - ❌ Never work in main repository
 - ❌ Never skip the verification step
 - ❌ Never manually create or manage worktrees
