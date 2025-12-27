@@ -68,19 +68,28 @@ git commit -m "your descriptive message"
 
 **Note**: Always commit from your worktree directory, never from the main repository.
 
-### Step 3: Push your worktree branch to dev
+### Step 3: Merge your worktree branch into LOCAL dev
 
-Push your worktree's branch to the remote `dev` branch:
+Merge your changes into the LOCAL `dev` branch for Xcode testing:
 ```bash
-git push origin <your-worktree-branch-name>:dev
+# Switch to local dev branch
+git checkout dev
+
+# Merge your worktree branch into dev
+git merge <your-worktree-branch-name>
+
+# Return to your worktree branch
+git checkout <your-worktree-branch-name>
 ```
 
-Example if your branch is named `elegant-turing`:
+Example if your branch is named `zealous-mccarthy`:
 ```bash
-git push origin elegant-turing:dev
+git checkout dev
+git merge zealous-mccarthy
+git checkout zealous-mccarthy
 ```
 
-**Important**: This pushes your changes to the remote `dev` branch. The user maintains a local `dev` branch for testing in Xcode - DO NOT modify or interfere with the local `dev` branch. The user will update it manually when needed.
+**CRITICAL**: This updates the LOCAL `dev` branch so the user can test in Xcode. DO NOT push to remote GitHub - the user will do that later after testing.
 
 ---
 
@@ -90,13 +99,14 @@ When the user says "push to dev", follow this sequence:
 
 1. **Work in your worktree** - Edit files at the worktree path
 2. **Commit your changes** - Use `git add` and `git commit` in the worktree
-3. **Push to remote dev** - Run: `git push origin <worktree-branch>:dev`
+3. **Merge into LOCAL dev** - Checkout local `dev`, merge your worktree branch, return to worktree
 
 This does NOT mean:
-- ❌ Checking out the local `dev` branch (user manages this for Xcode testing)
-- ❌ Merging your branch into local `dev` (user handles this manually)
+- ❌ Pushing to remote GitHub (`origin/dev`)
 - ❌ Working in the main repository
-- ❌ Modifying the local `dev` branch in any way
+- ❌ Skipping the merge into local `dev`
+
+**THE USER TESTS IN XCODE USING LOCAL `dev` BRANCH. Remote GitHub comes LATER.**
 
 ---
 
@@ -106,8 +116,8 @@ This does NOT mean:
 |----------------|-------------------|-----|
 | Edit files in main repo | Edit files in worktree | Worktree isolation prevents conflicts |
 | `cd` to main repo to commit | Commit from worktree | Commits must be in worktree branch |
-| Modify local `dev` branch | `git push origin <branch>:dev` | User manages local dev for Xcode testing |
-| `git push origin dev` | `git push origin <worktree-branch>:dev` | Push your branch TO dev, not dev itself |
+| Push to remote GitHub | Merge into local `dev` | User tests locally first, pushes to GitHub later |
+| Skip merging to local dev | Merge to local dev | User needs local dev updated for Xcode testing |
 | Manually create worktrees | Let app manage worktrees | Claude Code app handles worktree creation |
 
 ---
@@ -141,27 +151,29 @@ git branch --show-current
 
 ```bash
 # 1. Edit the file in YOUR WORKTREE (use Edit tool)
-# Path: /Volumes/.../SimpleTunes/<your-branch>/frontend/SimpleTunes/API/BackendService.swift
+# Path: /Volumes/.../SimpleTunes/zealous-mccarthy/frontend/SimpleTunes/API/BackendService.swift
 
 # 2. Commit in worktree
 git add -A
 git commit -m "Fix: resolve connection timeout in BackendService"
 
-# 3. Push worktree branch to dev
-git push origin <your-worktree-branch>:dev
+# 3. Merge into LOCAL dev for Xcode testing
+git checkout dev
+git merge zealous-mccarthy
+git checkout zealous-mccarthy
 ```
 
 ---
 
-## AFTER EVERY PUSH - MANDATORY CONFIRMATION
+## AFTER MERGING TO DEV - MANDATORY CONFIRMATION
 
-After pushing changes, ALWAYS run this command and show output to the user:
+After merging to local dev, ALWAYS run this command and show output to the user:
 
 ```bash
-git log origin/dev -1 --oneline
+git log dev -1 --oneline
 ```
 
-This confirms your commit successfully reached `origin/dev`.
+This confirms your changes are in the local `dev` branch for Xcode testing.
 
 **Example output**:
 ```
@@ -265,14 +277,14 @@ cd ~/.claude-worktrees/SimpleTunes/<branch-name>
 ```bash
 # 1. Make changes (use Edit tool in worktree)
 
-# 2. Commit
+# 2. Commit in worktree
 git add -A && git commit -m "Description of changes"
 
-# 3. Push to dev
-git push origin $(git branch --show-current):dev
+# 3. Merge to local dev
+git checkout dev && git merge $(git branch --show-current) && git checkout -
 
-# 4. Verify
-git log origin/dev -1 --oneline
+# 4. Verify local dev updated
+git log dev -1 --oneline
 ```
 
 **Emergency check - "Where am I?"**:
@@ -293,9 +305,9 @@ pwd && git branch --show-current
 **WORKFLOW:**
 - ✅ Always work in the worktree (not main repo)
 - ✅ Commit from the worktree
-- ✅ Push your worktree branch to remote `dev`
-- ✅ Verify after every push
-- ❌ Never modify the local `dev` branch (user uses it for Xcode testing)
+- ✅ Merge your worktree branch into LOCAL `dev`
+- ✅ Verify local dev updated after every merge
+- ❌ NEVER push to remote GitHub (user does this after local testing)
 - ❌ Never work in main repository
-- ❌ Never skip the verification step
+- ❌ Never skip merging to local dev
 - ❌ Never manually create or manage worktrees
