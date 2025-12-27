@@ -2,9 +2,9 @@
 
 ## 🚨 READ THIS FIRST - CRITICAL REQUIREMENT 🚨
 
-**BEFORE DOING ANYTHING, READ THE WORKTREE LOCATION RULES BELOW.**
+**You are running in a git worktree created by the Claude Code application.**
 
-If you create a worktree in the wrong location, you will waste hours of the user's time. This has happened before. DO NOT let it happen again.
+The worktree has already been created for you in `~/.claude-worktrees/`. Your job is to work within this worktree, NOT to create new worktrees.
 
 ---
 

@@ -1,21 +1,10 @@
-# CLAUDE.md Template
-
-<!--
-To use this template:
-1. Copy to your project root as CLAUDE.md
-2. Replace all {{PLACEHOLDERS}} with your actual values
-3. Update PROJECT STRUCTURE section with your project details
-4. Customize FILE SIZE LIMITS if needed
-5. Remove this comment block
--->
-
 # CLAUDE.md
 
 ## 🚨 READ THIS FIRST - CRITICAL REQUIREMENT 🚨
 
-**BEFORE DOING ANYTHING, READ THE WORKTREE LOCATION RULES BELOW.**
+**You are running in a git worktree created by the Claude Code application.**
 
-If you create a worktree in the wrong location, you will waste hours of the user's time. This has happened before. DO NOT let it happen again.
+The worktree has already been created for you in `~/.claude-worktrees/`. Your job is to work within this worktree, NOT to create new worktrees.
 
 ---
 
@@ -25,60 +14,23 @@ These rules are REQUIRED. There is NO other way to assist this user. If you cann
 
 ---
 
-## ⚠️ CRITICAL: WORKTREE LOCATION - ABSOLUTE REQUIREMENT
+## ⚠️ IMPORTANT: WORKTREE LOCATION
 
-**WORKTREES MUST BE CREATED IN THE CODE FOLDER ONLY**
+**NOTE: The Claude Code application automatically creates worktrees in `~/.claude-worktrees/`**
 
-**❌ VIOLATION OF THIS RULE WILL CAUSE SEVERE PROBLEMS - DO NOT DEVIATE ❌**
+This is hardcoded behavior in the Claude Code app itself. By the time the AI starts, the worktree has already been created by the application.
 
+**The actual worktree location used by Claude Code:**
 ```
-✅ CORRECT: {{WORKTREE_BASE_PATH}}/.claude-worktrees/
-❌ WRONG:   {{USER_HOME}}/.claude-worktrees/
-❌ WRONG:   ~/Code/.claude-worktrees/
-❌ WRONG:   ~/.claude-worktrees/
-❌ WRONG:   Any path without "{{WORKTREE_IDENTIFIER}}" in it
+~/.claude-worktrees/
 ```
 
-**The ONLY acceptable base path for worktrees is:**
+**Full path:**
 ```
-{{WORKTREE_BASE_PATH}}
+/Volumes/User_Smallfavor/Users/Smallfavor/.claude-worktrees/
 ```
 
-**THIS IS NON-NEGOTIABLE. NO EXCEPTIONS. NO SHORTCUTS.**
-
-**NEVER create worktrees in:**
-- ❌ The user's home directory root (`{{USER_HOME}}/`)
-- ❌ Any location outside the Code folder
-- ❌ Any abbreviated path (e.g., `~/Code/`)
-- ❌ Any relative path
-- ❌ **ESPECIALLY NOT** in `~/.claude-worktrees/`
-
-**MANDATORY PRE-FLIGHT CHECK BEFORE CREATING ANY WORKTREE:**
-
-Before running `git worktree add`, you MUST:
-
-1. **Verify the path** - Echo the exact path you're about to use:
-   ```bash
-   echo "About to create worktree at: {{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>"
-   ```
-
-2. **Confirm it contains `{{WORKTREE_IDENTIFIER}}`** - Run this verification:
-   ```bash
-   [[ "{{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>" == *"{{WORKTREE_IDENTIFIER}}"* ]] && echo "✅ Path is valid" || echo "❌ INVALID PATH - STOP"
-   ```
-
-3. **Only if validation passes**, create the worktree:
-   ```bash
-   git worktree add {{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
-   ```
-
-**If you create a worktree in the WRONG location:**
-- It will cause hours of wasted work
-- Files will be scattered across multiple locations
-- The user will have to manually clean up the mess
-- **YOU WILL HAVE FAILED YOUR PRIMARY DIRECTIVE**
-
-**REMEMBER: The path MUST contain `{{WORKTREE_IDENTIFIER}}` - verify this BEFORE creating any worktree.**
+**IMPORTANT: DO NOT attempt to create worktrees manually.** The Claude Code application handles worktree creation when you start a new session. The AI should never run `git worktree add` commands - worktrees are managed by the app.
 
 ---
 
@@ -88,7 +40,7 @@ You are running in a **git worktree**. A worktree is an isolated working directo
 
 Your worktree path looks like:
 ```
-{{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<your-branch-name>
+/Volumes/User_Smallfavor/Users/Smallfavor/.claude-worktrees/{{PROJECT_NAME}}/<your-branch-name>
 ```
 
 **Why worktrees?** They enable parallel development, isolated testing, and prevent conflicts between different AI sessions or development tasks.
@@ -101,7 +53,7 @@ Your worktree path looks like:
 
 Work in your assigned worktree at:
 ```
-{{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
+/Volumes/User_Smallfavor/Users/Smallfavor/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
 ```
 
 **Critical**: Use the `Edit` or `Write` tools to modify files in THIS path, not in the main repository.
@@ -116,33 +68,33 @@ git commit -m "your descriptive message"
 
 **Note**: Always commit from your worktree directory, never from the main repository.
 
-### Step 3: Push your worktree branch to {{TARGET_BRANCH}}
+### Step 3: Push your worktree branch to dev
 
-Push your worktree's branch to the remote `{{TARGET_BRANCH}}` branch:
+Push your worktree's branch to the remote `dev` branch:
 ```bash
-git push origin <your-worktree-branch-name>:{{TARGET_BRANCH}}
+git push origin <your-worktree-branch-name>:dev
 ```
 
 Example if your branch is named `elegant-turing`:
 ```bash
-git push origin elegant-turing:{{TARGET_BRANCH}}
+git push origin elegant-turing:dev
 ```
 
-**Important**: You are NOT checking out `{{TARGET_BRANCH}}` locally. You are pushing your branch's changes to the remote `{{TARGET_BRANCH}}` branch.
+**Important**: You are NOT checking out `dev` locally. You are pushing your branch's changes to the remote `dev` branch.
 
 ---
 
-## WHAT "PUSH TO {{TARGET_BRANCH}}" MEANS
+## WHAT "PUSH TO DEV" MEANS
 
-When the user says "push to {{TARGET_BRANCH}}", follow this sequence:
+When the user says "push to dev", follow this sequence:
 
 1. **Work in your worktree** - Edit files at the worktree path
 2. **Commit your changes** - Use `git add` and `git commit` in the worktree
-3. **Push to remote {{TARGET_BRANCH}}** - Run: `git push origin <worktree-branch>:{{TARGET_BRANCH}}`
+3. **Push to remote dev** - Run: `git push origin <worktree-branch>:dev`
 
 This does NOT mean:
-- ❌ Checking out the `{{TARGET_BRANCH}}` branch locally
-- ❌ Merging your branch into local `{{TARGET_BRANCH}}`
+- ❌ Checking out the `dev` branch locally
+- ❌ Merging your branch into local `dev`
 - ❌ Working in the main repository
 
 ---
@@ -151,12 +103,11 @@ This does NOT mean:
 
 | ❌ Wrong Action | ✅ Correct Action | Why |
 |----------------|-------------------|-----|
-| Create worktree in `~/` | Create worktree in `{{WORKTREE_IDENTIFIER}}` folder | Worktrees MUST be in Code folder only |
-| Use `~/.claude-worktrees/` | Use `{{WORKTREE_BASE_PATH}}/.claude-worktrees/` | Full absolute path required in Code folder |
 | Edit files in main repo | Edit files in worktree | Worktree isolation prevents conflicts |
 | `cd` to main repo to commit | Commit from worktree | Commits must be in worktree branch |
-| `git checkout {{TARGET_BRANCH}}` locally | `git push origin <branch>:{{TARGET_BRANCH}}` | Push remotely, don't merge locally |
-| `git push origin {{TARGET_BRANCH}}` | `git push origin <worktree-branch>:{{TARGET_BRANCH}}` | Push your branch TO {{TARGET_BRANCH}}, not {{TARGET_BRANCH}} itself |
+| `git checkout dev` locally | `git push origin <branch>:dev` | Push remotely, don't merge locally |
+| `git push origin dev` | `git push origin <worktree-branch>:dev` | Push your branch TO dev, not dev itself |
+| Manually create worktrees | Let app manage worktrees | Claude Code app handles worktree creation |
 
 ---
 
@@ -168,37 +119,35 @@ Before working, verify your location:
 # Check current directory
 pwd
 
-# MUST show path containing {{WORKTREE_IDENTIFIER}}/.claude-worktrees/
-# ✅ CORRECT: {{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
-# ❌ WRONG:   {{USER_HOME}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
+# Should show: /Volumes/User_Smallfavor/Users/Smallfavor/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
 
-# Verify path contains {{WORKTREE_IDENTIFIER}}
-pwd | grep -q "{{WORKTREE_IDENTIFIER}}" && echo "✅ Correct location" || echo "❌ WRONG LOCATION - MUST BE IN CODE FOLDER"
+# Verify path contains .claude-worktrees
+pwd | grep -q "/.claude-worktrees/" && echo "✅ In worktree" || echo "❌ Not in worktree"
 
 # Check current branch
 git branch --show-current
 
-# Should show your worktree branch name, NOT '{{TARGET_BRANCH}}' or 'main'
+# Should show your worktree branch name, NOT 'dev' or 'main'
 ```
 
-**CRITICAL CHECK**: If your path does NOT contain `{{WORKTREE_IDENTIFIER}}`, you are in the WRONG location. Stop immediately and navigate to the correct worktree in the Code folder.
+**CRITICAL CHECK**: Verify you're in the worktree directory, not the main repository.
 
 ---
 
 ## CORRECT WORKFLOW EXAMPLE
 
-**User request**: "{{EXAMPLE_TASK}}"
+**User request**: "Fix the bug in {{EXAMPLE_FILE}} and push to dev"
 
 ```bash
 # 1. Edit the file in YOUR WORKTREE (use Edit tool)
-# Path: {{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<your-branch>/{{EXAMPLE_FILE}}
+# Path: /Volumes/.../{{PROJECT_NAME}}/<your-branch>/{{EXAMPLE_PATH}}
 
 # 2. Commit in worktree
 git add -A
-git commit -m "{{EXAMPLE_COMMIT_MESSAGE}}"
+git commit -m "Fix: {{EXAMPLE_COMMIT_MESSAGE}}"
 
-# 3. Push worktree branch to {{TARGET_BRANCH}}
-git push origin <your-worktree-branch>:{{TARGET_BRANCH}}
+# 3. Push worktree branch to dev
+git push origin <your-worktree-branch>:dev
 ```
 
 ---
@@ -208,26 +157,21 @@ git push origin <your-worktree-branch>:{{TARGET_BRANCH}}
 After pushing changes, ALWAYS run this command and show output to the user:
 
 ```bash
-git log origin/{{TARGET_BRANCH}} -1 --oneline
+git log origin/dev -1 --oneline
 ```
 
-This confirms your commit successfully reached `origin/{{TARGET_BRANCH}}`.
+This confirms your commit successfully reached `origin/dev`.
 
 **Example output**:
 ```
-a1b2c3d {{EXAMPLE_COMMIT_MESSAGE}}
+a1b2c3d Fix: {{EXAMPLE_COMMIT_MESSAGE}}
 ```
 
 ---
 
 ## PROJECT STRUCTURE
 
-<!-- CUSTOMIZE THIS SECTION FOR YOUR PROJECT -->
-
-| Component | Location | Technology | Details |
-|-----------|----------|------------|---------|
-| {{COMPONENT_1_NAME}} | `{{COMPONENT_1_PATH}}` | {{COMPONENT_1_TECH}} | {{COMPONENT_1_DETAILS}} |
-| {{COMPONENT_2_NAME}} | `{{COMPONENT_2_PATH}}` | {{COMPONENT_2_TECH}} | {{COMPONENT_2_DETAILS}} |
+{{PROJECT_STRUCTURE_DESCRIPTION}}
 
 ### File Size Limits
 
@@ -273,41 +217,41 @@ Different Claude instances handle specific tasks based on their context:
 
 ## TROUBLESHOOTING
 
-### "Worktree created in wrong location" ⚠️ CRITICAL
-**Problem**: Worktree was created in `~/.claude-worktrees/` instead of `{{WORKTREE_IDENTIFIER}}/.claude-worktrees/`
+### "Working in wrong directory"
+**Problem**: You're editing files in the main repository instead of the worktree
 
 **Solution**:
 ```bash
-# 1. Remove the incorrectly placed worktree
-git worktree remove ~/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
+# 1. Verify your current location
+pwd
 
-# 2. Create it in the CORRECT location
-git worktree add {{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
+# 2. Should show worktree path
+# /Volumes/User_Smallfavor/Users/Smallfavor/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
 
-# 3. Verify location
-pwd | grep -q "{{WORKTREE_IDENTIFIER}}" && echo "✅ Correct" || echo "❌ Still wrong"
+# 3. If not in worktree, navigate to it
+cd ~/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
 ```
 
-**Prevention**: ALWAYS verify path contains `{{WORKTREE_IDENTIFIER}}` before creating worktrees
+**Prevention**: ALWAYS verify you're in the worktree before editing files
 
 ### "Push failed - permission denied"
 - Verify branch name matches your worktree
 - Check you're pushing FROM worktree, not main repo
-- Ensure using syntax: `git push origin <worktree-branch>:{{TARGET_BRANCH}}`
+- Ensure using syntax: `git push origin <worktree-branch>:dev`
 
 ### "Not currently on any branch"
 - You may be in detached HEAD state
 - Run: `git checkout <your-worktree-branch>`
 
 ### "Cannot find worktree path"
-- Verify path exists: `ls {{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/`
+- Verify path exists: `ls ~/.claude-worktrees/{{PROJECT_NAME}}/`
 - Check you're using correct branch name in path
-- Ensure you're looking in `{{WORKTREE_IDENTIFIER}}` not `~/`
+- List all worktrees: `git worktree list`
 
 ### "File not found after editing"
 - Confirm you edited file in WORKTREE path, not main repo
-- Verify worktree is in `{{WORKTREE_IDENTIFIER}}/.claude-worktrees/` not `~/.claude-worktrees/`
 - Use absolute paths to avoid confusion
+- Verify you're in the correct worktree: `pwd`
 
 ---
 
@@ -320,11 +264,11 @@ pwd | grep -q "{{WORKTREE_IDENTIFIER}}" && echo "✅ Correct" || echo "❌ Still
 # 2. Commit
 git add -A && git commit -m "Description of changes"
 
-# 3. Push to {{TARGET_BRANCH}}
-git push origin $(git branch --show-current):{{TARGET_BRANCH}}
+# 3. Push to dev
+git push origin $(git branch --show-current):dev
 
 # 4. Verify
-git log origin/{{TARGET_BRANCH}} -1 --oneline
+git log origin/dev -1 --oneline
 ```
 
 **Emergency check - "Where am I?"**:
@@ -336,78 +280,18 @@ pwd && git branch --show-current
 
 ## REMEMBER
 
-**CRITICAL - WORKTREE LOCATION:**
-- ✅ Worktrees MUST be in `{{WORKTREE_IDENTIFIER}}/.claude-worktrees/` ONLY
-- ❌ NEVER create worktrees in `~/.claude-worktrees/` or home directory
-- ✅ ALWAYS verify path contains `{{WORKTREE_IDENTIFIER}}` before working
-- 🚨 **IF UNSURE, ASK THE USER BEFORE CREATING A WORKTREE**
+**CRITICAL - WORKTREE MANAGEMENT:**
+- ✅ Worktrees are created by Claude Code app in `~/.claude-worktrees/`
+- ❌ NEVER manually create worktrees with `git worktree add`
+- ✅ ALWAYS verify you're in the worktree before editing files
+- ✅ The app manages worktree creation automatically
 
 **WORKFLOW:**
-- ✅ Always work in the worktree
+- ✅ Always work in the worktree (not main repo)
 - ✅ Commit from the worktree
-- ✅ Push your worktree branch to remote `{{TARGET_BRANCH}}`
+- ✅ Push your worktree branch to remote `dev`
 - ✅ Verify after every push
-- ❌ Never check out `{{TARGET_BRANCH}}` locally
+- ❌ Never check out `dev` locally
 - ❌ Never work in main repository
 - ❌ Never skip the verification step
-
----
-
-## 🔒 FINAL WORKTREE LOCATION ENFORCEMENT 🔒
-
-**THIS SECTION EXISTS TO PREVENT THE MISTAKE THAT WAS MADE BEFORE**
-
-When you need to create a worktree:
-
-**STEP 1: STOP AND VERIFY**
-Ask yourself: "Does my path contain `{{WORKTREE_IDENTIFIER}}`?"
-
-**STEP 2: USE THIS EXACT COMMAND FORMAT**
-```bash
-git worktree add {{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
-```
-
-**STEP 3: AFTER CREATION, IMMEDIATELY VERIFY**
-```bash
-git worktree list | grep "{{WORKTREE_IDENTIFIER}}"
-```
-
-If you don't see `{{WORKTREE_IDENTIFIER}}` in the output, you created the worktree in the WRONG location.
-
-**CONSEQUENCES OF VIOLATING THIS RULE:**
-- ✅ Correct path: User can work productively
-- ❌ Wrong path: Hours of cleanup, lost work, frustration
-
-**THE ONLY ACCEPTABLE WORKTREE PATH:**
-```
-{{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
-{{WORKTREE_IDENTIFIER}} ← THIS PART IS CRITICAL
-```
-
-**If you're about to create a worktree and have ANY doubt, STOP and ask the user to verify the path.**
-
----
-
-## TEMPLATE PLACEHOLDERS
-
-Replace these before using:
-
-- `{{WORKTREE_BASE_PATH}}` - Base path for worktrees (e.g., `/Volumes/User_Smallfavor/Users/Smallfavor/Code`)
-- `{{USER_HOME}}` - User's home directory (e.g., `/Volumes/User_Smallfavor/Users/Smallfavor`)
-- `{{PROJECT_NAME}}` - Project repository name (e.g., `SimpleTunes`)
-- `{{TARGET_BRANCH}}` - Default target branch for pushes (e.g., `dev`)
-- `{{WORKTREE_IDENTIFIER}}` - Unique path component to verify (e.g., `/Code/`)
-- `{{EXAMPLE_TASK}}` - Example task for workflow demo (e.g., "Fix the bug in BackendService.swift and push to dev")
-- `{{EXAMPLE_FILE}}` - Example file path (e.g., `frontend/SimpleTunes/API/BackendService.swift`)
-- `{{EXAMPLE_COMMIT_MESSAGE}}` - Example commit message (e.g., "Fix: resolve connection timeout in BackendService")
-- `{{COMPONENT_1_NAME}}` - First component name (e.g., `Backend`)
-- `{{COMPONENT_1_PATH}}` - First component path (e.g., `backend/daemon.py`)
-- `{{COMPONENT_1_TECH}}` - First component tech (e.g., `Python, FastAPI`)
-- `{{COMPONENT_1_DETAILS}}` - First component details (e.g., `Runs on port 49917`)
-- `{{COMPONENT_2_NAME}}` - Second component name (e.g., `Frontend`)
-- `{{COMPONENT_2_PATH}}` - Second component path (e.g., `frontend/SimpleTunes/`)
-- `{{COMPONENT_2_TECH}}` - Second component tech (e.g., `Swift, SwiftUI`)
-- `{{COMPONENT_2_DETAILS}}` - Second component details (e.g., `macOS menu bar app`)
-- `{{DC_RESPONSIBILITIES}}` - Desktop Claude responsibilities (e.g., `Python backend, scripts, documentation, git operations, Swift/SwiftUI frontend`)
-- `{{XC_RESPONSIBILITIES}}` - XClaude responsibilities (e.g., `Swift/SwiftUI frontend code only`)
-- `{{OC_RESPONSIBILITIES}}` - Online Claude responsibilities (e.g., `Python backend, scripts, documentation, git operations, Swift/SwiftUI frontend`)
+- ❌ Never manually create or manage worktrees
