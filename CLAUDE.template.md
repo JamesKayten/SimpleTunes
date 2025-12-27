@@ -11,6 +11,14 @@ To use this template:
 
 # CLAUDE.md
 
+## 🚨 READ THIS FIRST - CRITICAL REQUIREMENT 🚨
+
+**BEFORE DOING ANYTHING, READ THE WORKTREE LOCATION RULES BELOW.**
+
+If you create a worktree in the wrong location, you will waste hours of the user's time. This has happened before. DO NOT let it happen again.
+
+---
+
 ## MANDATORY RULES - NO EXCEPTIONS
 
 These rules are REQUIRED. There is NO other way to assist this user. If you cannot follow these rules exactly, you cannot help.
@@ -21,11 +29,14 @@ These rules are REQUIRED. There is NO other way to assist this user. If you cann
 
 **WORKTREES MUST BE CREATED IN THE CODE FOLDER ONLY**
 
+**❌ VIOLATION OF THIS RULE WILL CAUSE SEVERE PROBLEMS - DO NOT DEVIATE ❌**
+
 ```
 ✅ CORRECT: {{WORKTREE_BASE_PATH}}/.claude-worktrees/
 ❌ WRONG:   {{USER_HOME}}/.claude-worktrees/
 ❌ WRONG:   ~/Code/.claude-worktrees/
 ❌ WRONG:   ~/.claude-worktrees/
+❌ WRONG:   Any path without "{{WORKTREE_IDENTIFIER}}" in it
 ```
 
 **The ONLY acceptable base path for worktrees is:**
@@ -33,17 +44,41 @@ These rules are REQUIRED. There is NO other way to assist this user. If you cann
 {{WORKTREE_BASE_PATH}}
 ```
 
+**THIS IS NON-NEGOTIABLE. NO EXCEPTIONS. NO SHORTCUTS.**
+
 **NEVER create worktrees in:**
-- The user's home directory root
-- Any location outside the Code folder
-- Any abbreviated or relative path
+- ❌ The user's home directory root (`{{USER_HOME}}/`)
+- ❌ Any location outside the Code folder
+- ❌ Any abbreviated path (e.g., `~/Code/`)
+- ❌ Any relative path
+- ❌ **ESPECIALLY NOT** in `~/.claude-worktrees/`
 
-**If you need to create a worktree, the command MUST be:**
-```bash
-git worktree add {{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
-```
+**MANDATORY PRE-FLIGHT CHECK BEFORE CREATING ANY WORKTREE:**
 
-**Before creating any worktree, verify the path contains `{{WORKTREE_IDENTIFIER}}` in it.**
+Before running `git worktree add`, you MUST:
+
+1. **Verify the path** - Echo the exact path you're about to use:
+   ```bash
+   echo "About to create worktree at: {{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>"
+   ```
+
+2. **Confirm it contains `{{WORKTREE_IDENTIFIER}}`** - Run this verification:
+   ```bash
+   [[ "{{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>" == *"{{WORKTREE_IDENTIFIER}}"* ]] && echo "✅ Path is valid" || echo "❌ INVALID PATH - STOP"
+   ```
+
+3. **Only if validation passes**, create the worktree:
+   ```bash
+   git worktree add {{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
+   ```
+
+**If you create a worktree in the WRONG location:**
+- It will cause hours of wasted work
+- Files will be scattered across multiple locations
+- The user will have to manually clean up the mess
+- **YOU WILL HAVE FAILED YOUR PRIMARY DIRECTIVE**
+
+**REMEMBER: The path MUST contain `{{WORKTREE_IDENTIFIER}}` - verify this BEFORE creating any worktree.**
 
 ---
 
@@ -305,6 +340,7 @@ pwd && git branch --show-current
 - ✅ Worktrees MUST be in `{{WORKTREE_IDENTIFIER}}/.claude-worktrees/` ONLY
 - ❌ NEVER create worktrees in `~/.claude-worktrees/` or home directory
 - ✅ ALWAYS verify path contains `{{WORKTREE_IDENTIFIER}}` before working
+- 🚨 **IF UNSURE, ASK THE USER BEFORE CREATING A WORKTREE**
 
 **WORKFLOW:**
 - ✅ Always work in the worktree
@@ -314,6 +350,41 @@ pwd && git branch --show-current
 - ❌ Never check out `{{TARGET_BRANCH}}` locally
 - ❌ Never work in main repository
 - ❌ Never skip the verification step
+
+---
+
+## 🔒 FINAL WORKTREE LOCATION ENFORCEMENT 🔒
+
+**THIS SECTION EXISTS TO PREVENT THE MISTAKE THAT WAS MADE BEFORE**
+
+When you need to create a worktree:
+
+**STEP 1: STOP AND VERIFY**
+Ask yourself: "Does my path contain `{{WORKTREE_IDENTIFIER}}`?"
+
+**STEP 2: USE THIS EXACT COMMAND FORMAT**
+```bash
+git worktree add {{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
+```
+
+**STEP 3: AFTER CREATION, IMMEDIATELY VERIFY**
+```bash
+git worktree list | grep "{{WORKTREE_IDENTIFIER}}"
+```
+
+If you don't see `{{WORKTREE_IDENTIFIER}}` in the output, you created the worktree in the WRONG location.
+
+**CONSEQUENCES OF VIOLATING THIS RULE:**
+- ✅ Correct path: User can work productively
+- ❌ Wrong path: Hours of cleanup, lost work, frustration
+
+**THE ONLY ACCEPTABLE WORKTREE PATH:**
+```
+{{WORKTREE_BASE_PATH}}/.claude-worktrees/{{PROJECT_NAME}}/<branch-name>
+{{WORKTREE_IDENTIFIER}} ← THIS PART IS CRITICAL
+```
+
+**If you're about to create a worktree and have ANY doubt, STOP and ask the user to verify the path.**
 
 ---
 

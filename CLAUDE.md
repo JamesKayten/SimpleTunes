@@ -1,5 +1,13 @@
 # CLAUDE.md
 
+## 🚨 READ THIS FIRST - CRITICAL REQUIREMENT 🚨
+
+**BEFORE DOING ANYTHING, READ THE WORKTREE LOCATION RULES BELOW.**
+
+If you create a worktree in the wrong location, you will waste hours of the user's time. This has happened before. DO NOT let it happen again.
+
+---
+
 ## MANDATORY RULES - NO EXCEPTIONS
 
 These rules are REQUIRED. There is NO other way to assist this user. If you cannot follow these rules exactly, you cannot help.
@@ -10,11 +18,14 @@ These rules are REQUIRED. There is NO other way to assist this user. If you cann
 
 **WORKTREES MUST BE CREATED IN THE CODE FOLDER ONLY**
 
+**❌ VIOLATION OF THIS RULE WILL CAUSE SEVERE PROBLEMS - DO NOT DEVIATE ❌**
+
 ```
 ✅ CORRECT: /Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/
 ❌ WRONG:   /Volumes/User_Smallfavor/Users/Smallfavor/.claude-worktrees/
 ❌ WRONG:   ~/Code/.claude-worktrees/
 ❌ WRONG:   ~/.claude-worktrees/
+❌ WRONG:   Any path without "/Code/" in it
 ```
 
 **The ONLY acceptable base path for worktrees is:**
@@ -22,17 +33,41 @@ These rules are REQUIRED. There is NO other way to assist this user. If you cann
 /Volumes/User_Smallfavor/Users/Smallfavor/Code
 ```
 
+**THIS IS NON-NEGOTIABLE. NO EXCEPTIONS. NO SHORTCUTS.**
+
 **NEVER create worktrees in:**
-- The user's home directory root
-- Any location outside the Code folder
-- Any abbreviated or relative path
+- ❌ The user's home directory root (`/Volumes/User_Smallfavor/Users/Smallfavor/`)
+- ❌ Any location outside the Code folder
+- ❌ Any abbreviated path (e.g., `~/Code/`)
+- ❌ Any relative path
+- ❌ **ESPECIALLY NOT** in `~/.claude-worktrees/`
 
-**If you need to create a worktree, the command MUST be:**
-```bash
-git worktree add /Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>
-```
+**MANDATORY PRE-FLIGHT CHECK BEFORE CREATING ANY WORKTREE:**
 
-**Before creating any worktree, verify the path contains `/Code/` in it.**
+Before running `git worktree add`, you MUST:
+
+1. **Verify the path** - Echo the exact path you're about to use:
+   ```bash
+   echo "About to create worktree at: /Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>"
+   ```
+
+2. **Confirm it contains `/Code/`** - Run this verification:
+   ```bash
+   [[ "/Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>" == *"/Code/"* ]] && echo "✅ Path is valid" || echo "❌ INVALID PATH - STOP"
+   ```
+
+3. **Only if validation passes**, create the worktree:
+   ```bash
+   git worktree add /Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>
+   ```
+
+**If you create a worktree in the WRONG location:**
+- It will cause hours of wasted work
+- Files will be scattered across multiple locations
+- The user will have to manually clean up the mess
+- **YOU WILL HAVE FAILED YOUR PRIMARY DIRECTIVE**
+
+**REMEMBER: The path MUST contain `/Code/` - verify this BEFORE creating any worktree.**
 
 ---
 
@@ -292,6 +327,7 @@ pwd && git branch --show-current
 - ✅ Worktrees MUST be in `/Code/.claude-worktrees/` ONLY
 - ❌ NEVER create worktrees in `~/.claude-worktrees/` or home directory
 - ✅ ALWAYS verify path contains `/Code/` before working
+- 🚨 **IF UNSURE, ASK THE USER BEFORE CREATING A WORKTREE**
 
 **WORKFLOW:**
 - ✅ Always work in the worktree
@@ -301,3 +337,38 @@ pwd && git branch --show-current
 - ❌ Never check out `dev` locally
 - ❌ Never work in main repository
 - ❌ Never skip the verification step
+
+---
+
+## 🔒 FINAL WORKTREE LOCATION ENFORCEMENT 🔒
+
+**THIS SECTION EXISTS TO PREVENT THE MISTAKE THAT WAS MADE BEFORE**
+
+When you need to create a worktree:
+
+**STEP 1: STOP AND VERIFY**
+Ask yourself: "Does my path contain `/Code/`?"
+
+**STEP 2: USE THIS EXACT COMMAND FORMAT**
+```bash
+git worktree add /Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>
+```
+
+**STEP 3: AFTER CREATION, IMMEDIATELY VERIFY**
+```bash
+git worktree list | grep "/Code/"
+```
+
+If you don't see `/Code/` in the output, you created the worktree in the WRONG location.
+
+**CONSEQUENCES OF VIOLATING THIS RULE:**
+- ✅ Correct path: User can work productively
+- ❌ Wrong path: Hours of cleanup, lost work, frustration
+
+**THE ONLY ACCEPTABLE WORKTREE PATH:**
+```
+/Volumes/User_Smallfavor/Users/Smallfavor/Code/.claude-worktrees/SimpleTunes/<branch-name>
+                                          ^^^^^ THIS PART IS CRITICAL
+```
+
+**If you're about to create a worktree and have ANY doubt, STOP and ask the user to verify the path.**
