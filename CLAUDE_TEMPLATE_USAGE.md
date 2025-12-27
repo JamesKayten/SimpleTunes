@@ -1,12 +1,12 @@
 # CLAUDE.md Template Usage Guide
 
-This guide explains how to use the `CLAUDE.md.template` file to create custom CLAUDE.md files for your projects.
+This guide explains how to use the `CLAUDE.template.md` file to create custom CLAUDE.md files for your projects.
 
 ## Quick Start
 
 ```bash
 # 1. Copy template to your project
-cp CLAUDE.md.template /path/to/your/project/CLAUDE.md
+cp CLAUDE.template.md /path/to/your/project/CLAUDE.md
 
 # 2. Replace placeholders with your values
 # See "Placeholder Reference" below
@@ -95,7 +95,7 @@ sed -e 's|{{WORKTREE_BASE_PATH}}|/Users/john/Code|g' \
     -e 's|{{DC_RESPONSIBILITIES}}|Full-stack development, git operations, documentation|g' \
     -e 's|{{XC_RESPONSIBILITIES}}|N/A for this project|g' \
     -e 's|{{OC_RESPONSIBILITIES}}|Full-stack development, git operations, documentation|g' \
-    CLAUDE.md.template > CLAUDE.md
+    CLAUDE.template.md > CLAUDE.md
 ```
 
 ### 3. Customize Project-Specific Sections
@@ -188,7 +188,7 @@ sed -e "s|{{WORKTREE_BASE_PATH}}|$WORKTREE_BASE_PATH|g" \
     -e "s|{{DC_RESPONSIBILITIES}}|$DC_RESPONSIBILITIES|g" \
     -e "s|{{XC_RESPONSIBILITIES}}|$XC_RESPONSIBILITIES|g" \
     -e "s|{{OC_RESPONSIBILITIES}}|$OC_RESPONSIBILITIES|g" \
-    CLAUDE.md.template > CLAUDE.md
+    CLAUDE.template.md > CLAUDE.md
 
 echo "✅ CLAUDE.md generated successfully"
 echo "⚠️  Remember to:"
